@@ -40,7 +40,7 @@ class BookController extends Controller
             ]);
 
             if ($validator->fails()) {
-                return response()->json(["message" => $validator->errors()], Response::HTTP_BAD_REQUEST);
+                return response()->json(["message" => $validator->errors()->__toString()], Response::HTTP_BAD_REQUEST);
             }
 
             $images = null;

@@ -29,7 +29,7 @@ Route::get('/group', [GroupController::class, 'index']);
 // Route::get('/group', [GroupController::class, 'showBookByGroup']);
 
 // Route::get('/group', [GroupController::class, 'index']);
-Route::get('/category', [CategoryController::class, 'showBookByCategory']);
+Route::get('/category', [CategoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
