@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Files;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -29,6 +30,7 @@ class BookController extends Controller
                 'title' => "required|string",
                 "slug" => 'required|string',
                 'group_id' => 'required|integer',
+                'category_id' => 'required',
                 'type' => 'required|string',
                 'author' => 'required|string',
                 'publisher' => 'required|string',
@@ -44,7 +46,7 @@ class BookController extends Controller
             $images = null;
 
             if ($request->file('images')) {
-                $images = Storage::put('images', $request->file('images'));
+                $images = Storage::disk('public')->put('images', $request->file('images'));
 
                 $files = new Files;
                 $files->filename = $request->file('images')->getClientOriginalName();
@@ -58,6 +60,7 @@ class BookController extends Controller
             $book->title = $request->title;
             $book->slug = $request->slug;
             $book->group_id = $request->group_id;
+            $book->category_id = $request->category_id;
             $book->type = $request->type;
             $book->author = $request->author;
             $book->publisher = $request->publisher;
@@ -67,6 +70,19 @@ class BookController extends Controller
             $book->save();
 
             return response()->json(["message" => 'Book added successfully'], Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            return response()->json(["message" => $th->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    public function show($slug)
+    {
+        try {
+            $data = Book::findOrFail($slug)->first();
+
+            return response()->json($data, 200);
+        } catch (ModelNotFoundException $mnfe) {
+            return response()->json(["message" => "Book not found"], Response::HTTP_NOT_FOUND);
         } catch (\Throwable $th) {
             return response()->json(["message" => $th->getMessage()], Response::HTTP_BAD_REQUEST);
         }

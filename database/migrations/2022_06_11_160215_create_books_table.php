@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('slug');
             $table->foreignId('group_id');
+            $table->foreignId('category_id');
             $table->string('type');
             $table->string('author');
             $table->string('publisher');
